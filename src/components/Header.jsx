@@ -3,9 +3,13 @@
 import Image from "next/image";
 import Link from "next/link";
 import { signIn, signOut, useSession } from "next-auth/react";
+import Modal from "react-modal";
+import { useState } from "react";
+import { IoIosAddCircleOutline } from "react-icons/io";
 
 const Header = () => {
 	const { data: session } = useSession();
+	const [isOpen, setIsOpen] = useState(false);
 
 	return (
 		<header className="shadow-sm border-b sticky top-0 bg-white z-30 p-3">
@@ -35,12 +39,18 @@ const Header = () => {
 				{/*menu items */}
 
 				{session ? (
-					<img
-						src={session.user.image}
-						alt="avatar user"
-						className="h-10 w-10 rounded-full cursor-pointer"
-						onClick={signOut}
-					/>
+					<div className="flex gap-6 items-center">
+						<IoIosAddCircleOutline
+							className="text-2xl cursor-pointer transform hover:scale-125 transition duration-300 hover:text-red-600"
+							onClick={() => setIsOpen(true)}
+						/>
+						<img
+							src={session.user.image}
+							alt="avatar user"
+							className="h-10 w-10 rounded-full cursor-pointer"
+							onClick={signOut}
+						/>
+					</div>
 				) : (
 					<button
 						onClick={signIn}
@@ -50,6 +60,14 @@ const Header = () => {
 					</button>
 				)}
 			</div>
+			{isOpen && (
+				<Modal isOpen={isOpen}>
+					<div>
+						<h1>Modal</h1>
+						<button onClick={() => setIsOpen(false)}>close</button>
+					</div>
+				</Modal>
+			)}
 		</header>
 	);
 };
